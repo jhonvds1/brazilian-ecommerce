@@ -11,5 +11,3 @@ def extract_csvs(folder_path: str) -> dict[str, pd.DataFrame]:
             nome = file.replace(".csv", "")
             dfs[nome] = df
     return dfs
-
-
