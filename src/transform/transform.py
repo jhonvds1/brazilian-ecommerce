@@ -12,17 +12,16 @@ def transform_orders(df: pd.DataFrame)->pd.DataFrame:
 
 
 def transform_order_items(df: pd.DataFrame)->pd.DataFrame:
-    df = df.drop_duplicates(subset='order_id')
+    # df = df.drop_duplicates(subset='order_id') nao faz sentido pq é o numero de items no pedido por id
     return df
 
 def transform_order_payments(df: pd.DataFrame)->pd.DataFrame:
-    df = df.drop_duplicates(subset='order_id')
+    # df = df.drop_duplicates(subset='order_id') 
     return df
 
 def transform_order_reviews(df: pd.DataFrame)->pd.DataFrame:
-    print(df.isna().sum())
     df = df.drop_duplicates(subset='review_id')
-    df = df.drop_duplicates(subset='order_id')
+    # df = df.drop_duplicates(subset='order_id')
     return df
 
 def transform_products(df: pd.DataFrame)->pd.DataFrame:
@@ -33,22 +32,16 @@ def transform_sellers(df: pd.DataFrame)->pd.DataFrame:
     df = df.drop(columns='seller_zip_code_prefix')
     return df
 
-def transform_product_category_name(df: pd.DataFrame)->pd.DataFrame:
-    ...
 
 
 def transform_all()->pd.DataFrame:
     df = extract_csvs("data/")
-    # df['olist_customers_dataset'] = transform_customers(df['olist_customers_dataset'])
-    # df['olist_orders_dataset'] = transform_orders(df['olist_orders_dataset'])
-    # df['olist_order_items_dataset'] = transform_order_items(df['olist_order_items_dataset'])
-    # df['olist_order_payments_dataset'] = transform_order_payments(df['olist_order_payments_dataset'])
-    # df['olist_order_reviews_dataset'] = transform_order_reviews(df['olist_order_reviews_dataset'])
-    # df['olist_products_dataset'] = transform_products(df['olist_products_dataset'])
-    # df['olist_sellers_dataset'] = transform_sellers(df['olist_sellers_dataset'])
+    df['olist_customers_dataset'] = transform_customers(df['olist_customers_dataset'])
+    df['olist_orders_dataset'] = transform_orders(df['olist_orders_dataset'])
+    df['olist_order_items_dataset'] = transform_order_items(df['olist_order_items_dataset'])
+    df['olist_order_payments_dataset'] = transform_order_payments(df['olist_order_payments_dataset'])
+    df['olist_order_reviews_dataset'] = transform_order_reviews(df['olist_order_reviews_dataset'])
+    df['olist_products_dataset'] = transform_products(df['olist_products_dataset'])
+    df['olist_sellers_dataset'] = transform_sellers(df['olist_sellers_dataset'])
     return df
 
-teste = transform_all()
-# print(teste.keys())
-# df = extract_csvs("data/")
-# print(df.keys())
