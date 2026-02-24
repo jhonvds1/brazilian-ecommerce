@@ -7,13 +7,20 @@ def transform_customers(df: pd.DataFrame)->pd.DataFrame:
     return df
 
 def transform_orders(df: pd.DataFrame)->pd.DataFrame:
-    df = df.dropna()    
+    df = df.dropna()
+    df['order_purchase_timestamp'] = df['order_purchase_timestamp'].astype('datetime64[ns]')
+    df['year_purchase'] = df['order_purchase_timestamp'].dt.year
+    df['month_purchase'] = df['order_purchase_timestamp'].dt.month
+    df['day_purchase'] = df['order_purchase_timestamp'].dt.day
+    df = df.reset_index(drop=True)
+    df['time_id'] = df.index + 1
     return df
-
 
 def transform_order_items(df: pd.DataFrame)->pd.DataFrame:
-    # df = df.drop_duplicates(subset='order_id') nao faz sentido pq é o numero de items no pedido por id
+    # print(df[''])
     return df
+
+
 
 def transform_order_payments(df: pd.DataFrame)->pd.DataFrame:
     # df = df.drop_duplicates(subset='order_id') 
@@ -31,7 +38,6 @@ def transform_products(df: pd.DataFrame)->pd.DataFrame:
 def transform_sellers(df: pd.DataFrame)->pd.DataFrame:
     df = df.drop(columns='seller_zip_code_prefix')
     return df
-
 
 
 def transform_all()->pd.DataFrame:
