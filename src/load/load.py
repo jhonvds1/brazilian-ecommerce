@@ -1,4 +1,3 @@
-from src.transform.transform import transform_all
 import pandas as pd
 from google.cloud import bigquery
 
@@ -6,8 +5,7 @@ job_config = bigquery.LoadJobConfig(
     write_disposition="WRITE_TRUNCATE" 
 )
 
-def create_tables()->dict:
-    df = transform_all()
+def create_tables(df: pd.DataFrame)->dict:
     dfs = {}
     dfs['df_dim_product'] = df['olist_products_dataset'][['product_id', 'product_category_name']]
     dfs['df_dim_time'] = df['olist_orders_dataset'][['time_id', 'date', 'year', 'month', 'day']]
@@ -25,13 +23,12 @@ def load_df_to_bq(table: pd.DataFrame, table_id: str):
     job.result()
     print(f"Dados carregados para {table_id}")
 
-def run_load():
-    tables = create_tables()
+def run_load(df: pd.DataFrame):
+    tables = create_tables(df)
     load_df_to_bq(tables['df_dim_product'], "brazilian-ecommerce-488418.ecommerce_dw.dim_product")
     load_df_to_bq(tables['df_dim_seller'], "brazilian-ecommerce-488418.ecommerce_dw.dim_seller")
     load_df_to_bq(tables['df_dim_time'], "brazilian-ecommerce-488418.ecommerce_dw.dim_time")
     load_df_to_bq(tables['df_dim_review'], "brazilian-ecommerce-488418.ecommerce_dw.dim_review")
     load_df_to_bq(tables['df_fact_order'], "brazilian-ecommerce-488418.ecommerce_dw.fact_order")
 
-run_load()
 
