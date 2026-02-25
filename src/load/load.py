@@ -16,48 +16,53 @@ load_logger = logging.getLogger("LOAD")
 
 def create_tables(df: pd.DataFrame) -> dict:
     load_logger.info("Criando tabelas de dimensões e fato")
+    try:
+        dfs = {}
 
-    dfs = {}
+        # Dim Product
+        dfs['df_dim_product'] = df['olist_products_dataset'][['product_id', 'product_category_name']]
+        load_logger.info(f"[dim_product] Linhas: {len(dfs['df_dim_product'])}")
 
-    # Dim Product
-    dfs['df_dim_product'] = df['olist_products_dataset'][['product_id', 'product_category_name']]
-    load_logger.info(f"[dim_product] Linhas: {len(dfs['df_dim_product'])}")
+        # Dim Time
+        dfs['df_dim_time'] = df['olist_orders_dataset'][['time_id', 'date', 'year', 'month', 'day']]
+        load_logger.info(f"[dim_time] Linhas: {len(dfs['df_dim_time'])}")
 
-    # Dim Time
-    dfs['df_dim_time'] = df['olist_orders_dataset'][['time_id', 'date', 'year', 'month', 'day']]
-    load_logger.info(f"[dim_time] Linhas: {len(dfs['df_dim_time'])}")
+        # Dim Review
+        dfs['df_dim_review'] = df['olist_order_reviews_dataset'][['review_id', 'review_score']]
+        load_logger.info(f"[dim_review] Linhas: {len(dfs['df_dim_review'])}")
 
-    # Dim Review
-    dfs['df_dim_review'] = df['olist_order_reviews_dataset'][['review_id', 'review_score']]
-    load_logger.info(f"[dim_review] Linhas: {len(dfs['df_dim_review'])}")
+        # Dim Seller
+        dfs['df_dim_seller'] = df['olist_sellers_dataset'][['seller_id', 'seller_city']]
+        load_logger.info(f"[dim_seller] Linhas: {len(dfs['df_dim_seller'])}")
 
-    # Dim Seller
-    dfs['df_dim_seller'] = df['olist_sellers_dataset'][['seller_id', 'seller_city']]
-    load_logger.info(f"[dim_seller] Linhas: {len(dfs['df_dim_seller'])}")
+        # Fact Order (joins)
+        dfs['df_order_review'] = pd.merge(
+            df['olist_order_items_dataset'],
+            df['olist_order_reviews_dataset'],
+            on='order_id'
+        )
 
-    # Fact Order (joins)
-    dfs['df_order_review'] = pd.merge(
-        df['olist_order_items_dataset'],
-        df['olist_order_reviews_dataset'],
-        on='order_id'
-    )
+        dfs['df_order_review'] = pd.merge(
+            dfs['df_order_review'],
+            df['olist_orders_dataset'],
+            on='order_id'
+        )
 
-    dfs['df_order_review'] = pd.merge(
-        dfs['df_order_review'],
-        df['olist_orders_dataset'],
-        on='order_id'
-    )
+        load_logger.info(f"[order_review] Linhas após joins: {len(dfs['df_order_review'])}")
 
-    load_logger.info(f"[order_review] Linhas após joins: {len(dfs['df_order_review'])}")
+        dfs['df_fact_order'] = dfs['df_order_review'][
+            ['order_id', 'product_id', 'seller_id', 'time_id', 'review_id', 'price']
+        ]
 
-    dfs['df_fact_order'] = dfs['df_order_review'][
-        ['order_id', 'product_id', 'seller_id', 'time_id', 'review_id', 'price']
-    ]
+        load_logger.info(f"[fact_order] Linhas: {len(dfs['df_fact_order'])}")
+        load_logger.info("Criação das tabelas concluída com sucesso")
 
-    load_logger.info(f"[fact_order] Linhas: {len(dfs['df_fact_order'])}")
-    load_logger.info("Criação das tabelas concluída com sucesso")
+        return dfs
+    except(KeyError, ValueError) as e:
+        load_logger.error(f"Erro ao montar tabelas do DW: {e}")
+        raise
 
-    return dfs
+# TODO: Passar o create table para o transform
 
 
 def load_df_to_bq(table: pd.DataFrame, table_id: str):
