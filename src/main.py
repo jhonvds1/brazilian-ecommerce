@@ -10,11 +10,15 @@ logging.basicConfig(
 )
 
 def run_pipeline():
-    logging.info("Iniciando O Pipeline")
-    raw_data = extract_csvs("data/")
-    transformed_data = transform_all(raw_data)
-    run_load(transformed_data)
-    logging.info("Pipeline finalizado!")
+    try:
+        logging.info("Iniciando O Pipeline")
+        raw_data = extract_csvs("data/")
+        transformed_data = transform_all(raw_data)
+        run_load(transformed_data)
+        logging.info("Pipeline finalizado!")
+    except:
+        logging.exception("Falha critica no Pipeline")
+        raise
 
 if __name__ == "__main__":
     run_pipeline()
