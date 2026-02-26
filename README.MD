@@ -71,6 +71,9 @@ Essa abordagem é padrão em projetos de Data Warehouse e BI.
 
 ```
 ├── data/                     # CSVs brutos
+├── docs
+|   ├── diagrama.png          # Diagrama do Banco de Dados
+|   └── schema.sql            # Modelagem do Banco de Dados no BigQuery
 ├── notebooks/
 │   └── visualizacao.ipynb    # Análises e gráficos
 ├── src/
@@ -81,6 +84,7 @@ Essa abordagem é padrão em projetos de Data Warehouse e BI.
 │   ├── load/
 │   │   └── load.py           # Carga no BigQuery
 │   └── main.py               # Orquestração do pipeline
+├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
