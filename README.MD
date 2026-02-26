@@ -116,11 +116,46 @@ pip install -r requirements.txt
 
 ### 4️⃣ Configurar credenciais do BigQuery
 
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS="caminho/credenciais.json"
-```
+#### 🔐 Configuração de Acesso ao BigQuery
 
-*(No Windows, usar `set` em vez de `export`)*
+Para que o pipeline consiga carregar os dados no Google BigQuery, é necessário configurar credenciais de acesso utilizando uma Service Account do Google Cloud.
+
+Essa configuração permite que o projeto se conecte de forma segura ao Data Warehouse durante a etapa de **LOAD**.
+
+---
+
+#### 📌 Pré-requisitos
+Antes de executar o pipeline, é necessário:
+- Possuir uma conta no Google Cloud
+- Ter um projeto criado no Google Cloud
+- Criar previamente o dataset `ecommerce_dw` no BigQuery
+
+> As tabelas do Data Warehouse são criadas automaticamente pelo pipeline durante a carga dos dados.
+
+---
+
+#### 🛠️ Passo a passo para criar as credenciais
+
+1. Acesse o Console do Google Cloud:  
+   https://console.cloud.google.com/
+
+2. No menu lateral, vá em:  
+   **IAM & Admin → Service Accounts**
+
+3. Clique em **"Create Service Account"**
+
+4. Defina:
+   - Nome: `bq-pipeline-access` (ou outro de sua preferência)
+   - Permissão recomendada: **BigQuery Data Editor** ou **BigQuery Admin**
+
+5. Após criar a conta, vá até a aba **"Keys"**
+6. Clique em **"Add Key" → "Create new key"**
+7. Escolha o formato **JSON**
+8. O arquivo de credenciais será baixado automaticamente (ex: `credentials.json`)
+
+> Observação importante  
+> Este projeto não cria nem baixa credenciais automaticamente.  
+> O usuário deve fornecer suas próprias credenciais do Google Cloud para autenticação no BigQuery.
 
 ### 5️⃣ Executar o Pipeline
 
