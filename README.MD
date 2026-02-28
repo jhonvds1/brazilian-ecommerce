@@ -64,12 +64,14 @@ Essa abordagem é padrão em projetos de Data Warehouse e BI.
 * Seaborn / Matplotlib
 * Papermill (execução automática de notebooks)
 * Logging (monitoramento do pipeline)
+* docker (conteinerização)
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
+├── credentials               # Armazenar as credenciais do BigQuery
 ├── data/                     # CSVs brutos
 ├── docs
 |   ├── diagrama.png          # Diagrama do Banco de Dados
@@ -100,21 +102,7 @@ git clone https://github.com/jhonvds1/brazilian-ecommerce.git
 cd brazilian-ecommerce
 ```
 
-### 2️⃣ Criar ambiente virtual
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-```
-
-### 3️⃣ Instalar dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4️⃣ Configurar credenciais do BigQuery
+### 2️⃣ Configurar credenciais do BigQuery
 
 #### 🔐 Configuração de Acesso ao BigQuery
 
@@ -126,6 +114,8 @@ Essa configuração permite que o projeto se conecte de forma segura ao Data War
 
 #### 📌 Pré-requisitos
 Antes de executar o pipeline, é necessário:
+- Docker
+- Docker Compose
 - Possuir uma conta no Google Cloud
 - Ter um projeto criado no Google Cloud
 - Criar previamente o dataset `ecommerce_dw` no BigQuery
@@ -151,16 +141,18 @@ Antes de executar o pipeline, é necessário:
 5. Após criar a conta, vá até a aba **"Keys"**
 6. Clique em **"Add Key" → "Create new key"**
 7. Escolha o formato **JSON**
-8. O arquivo de credenciais será baixado automaticamente (ex: `credentials.json`)
+8. O arquivo de credenciais será baixado automaticamente
+9. Coloque o nome de credenciais.json
+10. Adicione este arquivo na pasta `credentials`
 
 > Observação importante  
 > Este projeto não cria nem baixa credenciais automaticamente.  
 > O usuário deve fornecer suas próprias credenciais do Google Cloud para autenticação no BigQuery.
 
-### 5️⃣ Executar o Pipeline
+### 3️⃣ Executar o Pipeline
 
 ```bash
-python -m src.main
+docker-compose up --build
 ```
 
 ---
@@ -180,12 +172,13 @@ Essas análises simulam cenários reais de BI e tomada de decisão.
 
 ## 📈 Boas Práticas Aplicadas
 
-✔️ Arquitetura ETL modular
-✔️ Logging estruturado em todas as etapas
-✔️ Tratamento de erros com `try/except`
-✔️ Modelagem dimensional (Star Schema)
-✔️ Orquestração automatizada do pipeline
-✔️ Integração com Data Warehouse em nuvem
+✔️ Arquitetura ETL modular  
+✔️ Logging estruturado em todas as etapas  
+✔️ Tratamento de erros com `try/except`  
+✔️ Modelagem dimensional (Star Schema)  
+✔️ Orquestração automatizada do pipeline  
+✔️ Integração com Data Warehouse em nuvem  
+✔️ Conteinerização
 
 ---
 
@@ -203,7 +196,6 @@ Este projeto foi desenvolvido para fins de estudo e portfólio, com foco em:
 ## 📌 Possíveis Melhorias Futuras
 
 * Orquestração com Airflow ou Prefect
-* Containerização com Docker
 * Testes automatizados (Pytest)
 * Monitoramento com métricas de execução
 

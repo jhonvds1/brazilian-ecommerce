@@ -1,0 +1,12 @@
+services:
+  python:
+    build: .
+    image: brazilian_ecommerce:1.0
+    container_name: brazilian_ecommerce
+    volumes:
+      - ./data:/app/data
+      - ./credentials:/app/credentials
+      - ./notebooks:/app/notebooks
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credenciais.json
+      

@@ -10,4 +10,6 @@ COPY data/ data/
 
 COPY src/ src/
 
+COPY credentials/ credentials/
+
 CMD ["python", "-m", "src.main"]
